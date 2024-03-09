@@ -26,6 +26,7 @@ export default function Page(){
     wels: "https://naturefishblog.files.wordpress.com/2017/02/welscatfish_orig.jpg",
     barb: "https://www.khmertimeskh.com/wp-content/uploads/2023/03/55844-750x440.jpg",
     paroon: "https://fishlab.com/wp-content/uploads/2022/11/shutterstock_492757738.jpg",
+    taimen: "https://news.wisc.edu/newsphotos/images/Mongolia_Hogan_Zeb_taimen04.jpg",
 
     arapaima: "https://media.wired.com/photos/59269a378d4ebc5ab806ad9a/master/pass/Arapaima-73797921.jpg",
     bambusa: "https://www.greenflow.hk/cdn/shop/products/9db3394948486f15ed293dc93b52f48_1946x.jpg?v=1640159199",
@@ -51,6 +52,7 @@ export default function Page(){
     "What is the conservation status of the Giant Barb as determined by the IUCN?": ["Critically Endangered", images.barb],
     "In what year was the Alligator gar first described?": ["1803", images.gar],
     "What is the scientific name of the Goliath Tigerfish?": ["Hydrocynus goliath", images.tiger],
+    "What is the order of the Siberian Taimen according to scientific classification?": ["Salmoniformes", images.taimen],
     "Into which countries has the Paroon Shark been introduced?": ["Anatolia, South Africa and Malaysia", images.paroon],
     "What is the favorite food of Wels Catfish in Northern European water systems?": ["'Pigeons'", images.wels],
     "In which river is the largest species of catfish found?": ["The Mekong River", images.mekong],
@@ -75,6 +77,7 @@ export default function Page(){
   const [currObject, setCurrObj] = useState(solutions);
   const [color, setColor] = useState('#6FF1B7');
   const [anim, setAnim] = useState(false);
+  const [difficulty, setDifficulty] = useState("Easy");
   const passFlip = value => setFlip(value);
   const passReset = value => setReset(value);
 
@@ -176,20 +179,26 @@ export default function Page(){
       <div className={"h-screen bg-yellow-200 grid grid-rows-7 p-7 lg:p-5 overflow-hidden bg-[url(/src/assets/arapaima.jpg)] bg-right bg-no-repeat bg-cover"}>
 
         <div style={{textShadow: "1px 1px 2px black"}}
-             className={"select-none text-7xl text-white flex items-center justify-center"}>Fishcards!</div>
+             className={"select-none text-white flex flex-col items-center justify-center"}>
+          <div className={"text-7xl"}>Fishcards!</div>
+          <div>Total {difficulty} <span className={"line-through"}>Fish</span> Cards: {questions.length}</div>
+        </div>
 
         <div className={"text-center text-white select-none gap-5 lg:gap-3 flex justify-center items-center"}>
           <div onClick={()=> {
             changeDifficulty(solutions, green);
             flipReset();
+            setDifficulty("Easy");
           }}><Switch symbol={'Easy'} color={green}/></div>
           <div onClick={()=> {
             changeDifficulty(hardSolutions, blue);
             flipReset();
+            setDifficulty("Medium");
           }}><Switch symbol={'Medium'} color={blue}/></div>
           <div onClick={()=> {
             changeDifficulty(impossibleSolutions, red);
             flipReset();
+            setDifficulty("Hard");
           }}><Switch symbol={'Hard'} color={red}/></div>
         </div>
 
