@@ -1,0 +1,61 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/*.main-bg {*/
+/*    background-image: url("/src/assets/arapaima.jpg");*/
+/*    background-repeat: no-repeat;*/
+/*    background-size: cover;*/
+/*}*/
+
+.card {
+    transform-style: preserve-3d;
+    transition: 0.75s;
+    transform: perspective(2500px) rotateX(var(--rotate-y, 0));
+    position: relative;
+}
+
+.card.flip-front {
+    --rotate-y: 180deg;
+}
+
+.card.reset-flip {
+    --rotate-y: -360deg;
+}
+
+.card.flip-back {
+    --rotate-y: -180deg;
+}
+
+.card .front,
+.card .back {
+    position: absolute;
+    backface-visibility: hidden;
+}
+
+.card .back {
+    transform: rotateX(180deg);
+}
+
+@keyframes move-top {
+    0% {transform: translateY(0) rotate(0);}
+    50% {transform: translateY(-100px) rotate(-10deg);}
+    100% {transform: translateY(0) rotate(0);}
+}
+
+@keyframes move-bottom {
+    0% {transform: translateY(0) rotate(0);}
+    50% {transform: translateY(-100px) rotate(10deg);}
+    100% {transform: translateY(0) rotate(0);}
+}
+
+.top-card {
+     animation-name: move-top;
+     animation-duration: 0.75s;
+}
+
+.bottom-card {
+    animation-name: move-bottom;
+    animation-duration: 0.75s;
+}
+
