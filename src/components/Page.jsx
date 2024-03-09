@@ -51,7 +51,7 @@ export default function Page(){
     "What is the conservation status of the Giant Barb as determined by the IUCN?": ["Critically Endangered", images.barb],
     "In what year was the Alligator gar first described?": ["1803", images.gar],
     "What is the scientific name of the Goliath Tigerfish?": ["Hydrocynus goliath", images.tiger],
-    "Which countries have the Paroon Shark been introduced into?": ["Anatolia, South Africa and Malaysia", images.paroon],
+    "Into which countries has the Paroon Shark been introduced?": ["Anatolia, South Africa and Malaysia", images.paroon],
     "What is the favorite food of Wels Catfish in Northern European water systems?": ["'Pigeons'", images.wels],
     "In which river is the largest species of catfish found?": ["The Mekong River", images.mekong],
   }
