@@ -65,7 +65,7 @@ export default function Page(){
     "Find a Living Chinese Paddlefish specimen within the next 24 hours.": ["Okay", images.extinct],
     "What are the exact coordinates of the nearest Arapaima.": ["40° 45' 20.7936'' N 73° 50' 10.662'' W", images.arapaima],
     "Which non-fortuitous event reportedly occurred in 2001 in a rural village in Papua New Guinea involving the castration and subsequent death of two Fisherman?": [
-        "Unlike its carnivorous cousins, the Pacu primarily feeds on plant material, making it a predominantly herbivorous species. This dietary preference is reflected in its dentition; the Pacu's teeth are surprisingly human-like, square and flat, designed for grinding and crushing seeds and nuts that fall into the waters of their tropical habitat.",
+        "The Pacu primarily feeds on plant material, making it a predominantly herbivorous species. This dietary preference is reflected in its dentition; its teeth are surprisingly human-like, square and flat, designed for grinding and crushing seeds and nuts.",
         images.pacu],
     "What is the name that locals use for the Yellowcheek Bambusa?": ["鱤魚", images.bambusa],
   }

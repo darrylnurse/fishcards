@@ -14,10 +14,10 @@ export default function Flashcard({question, answer, setFlip, flip, setReset, re
           <div className={"front text-center p-8"}>{question}</div>
 
           <div className={`flex flex-col items-center gap-1 lg:gap-6 back text-center ${answer === "Hydrocynus goliath" ? 'italic' : ''}`}>
-            <div className={`flex items-center justify-center ${question === "Which non-fortuitous event reportedly occurred in 2001 in a rural village in Papua New Guinea involving the castration and subsequent death of two Fisherman?" ? 'text-xs lg:text-sm  px-8' : ''}`}>
+            <div className={`overflow-hidden flex items-center justify-center ${question === "Which non-fortuitous event reportedly occurred in 2001 in a rural village in Papua New Guinea involving the castration and subsequent death of two Fisherman?" ? 'text-xs lg:text-sm  px-8' : ''}`}>
               {answer}
             </div>
-            <div className={"h-[100px] w-[100px] lg:h-[150px] lg:w-[150px] overflow-hidden rounded-2xl"}><img className={" w-full h-full object-cover"} src={image} alt={"answer-image"}/></div>
+            <div className={`lg:h-[150px] lg:w-[150px] overflow-hidden rounded-2xl ${question === "Which non-fortuitous event reportedly occurred in 2001 in a rural village in Papua New Guinea involving the castration and subsequent death of two Fisherman?" ? 'h-[50px] w-[50px]' : 'h-[100px] w-[100px]'}`}><img className={" w-full h-full object-cover"} src={image} alt={"answer-image"}/></div>
           </div>
 
         </div>
