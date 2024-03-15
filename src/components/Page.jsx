@@ -2,7 +2,7 @@
 
 import Flashcard from "./Flashcard.jsx";
 import Switch from "./Switch.jsx";
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import Countdown from "react-countdown";
 
 
@@ -27,6 +27,7 @@ export default function Page(){
     barb: "https://www.khmertimeskh.com/wp-content/uploads/2023/03/55844-750x440.jpg",
     paroon: "https://fishlab.com/wp-content/uploads/2022/11/shutterstock_492757738.jpg",
     taimen: "https://news.wisc.edu/newsphotos/images/Mongolia_Hogan_Zeb_taimen04.jpg",
+    dragon: "https://pbs.twimg.com/media/BuH6U1oIIAAsasp.jpg:large",
 
     arapaima: "https://media.wired.com/photos/59269a378d4ebc5ab806ad9a/master/pass/Arapaima-73797921.jpg",
     bambusa: "https://www.greenflow.hk/cdn/shop/products/9db3394948486f15ed293dc93b52f48_1946x.jpg?v=1640159199",
@@ -35,6 +36,7 @@ export default function Page(){
     extinct: "https://th-thumbnailer.cdn-si-edu.com/nmflh5ijDgeN3lbEOswg9SUx7to=/fit-in/1600x0/https://tf-cmsv2-smithsonianmag-media.s3.amazonaws.com/filer/f5/ec/f5ecfbf0-253d-4e6c-894f-67f7afe1752c/ap_20010350989859.gif",
     bullshark: "https://c.tenor.com/dWRJU3k0FF4AAAAd/tenor.gif",
     pacu: "https://cdn.wcs.org/2022/05/25/8x0w1rmx2j_Julie_Larsen_Maher_9476_Paku_CH_AQ_03_30_11.jpg",
+    lung: "https://live.staticflickr.com/2814/12098421495_abc46f871f_b.jpg",
   }
 
   const solutions = {
@@ -54,6 +56,7 @@ export default function Page(){
     "What is the scientific name of the Goliath Tigerfish?": ["Hydrocynus goliath", images.tiger],
     "What is the order of the Siberian Taimen according to scientific classification?": ["Salmoniformes", images.taimen],
     "Into which countries has the Paroon Shark been introduced?": ["Anatolia, South Africa and Malaysia", images.paroon],
+    "What is the lesser-used name for the Silver Arowana?": ["Water Monkey", images.dragon],
     "What is the favorite food of Wels Catfish in Northern European water systems?": ["'Pigeons'", images.wels],
     "In which river is the largest species of catfish found?": ["The Mekong River", images.mekong],
   }
@@ -61,6 +64,7 @@ export default function Page(){
   const impossibleSolutions = {
     "Run.": [<div key={"hello"}><Countdown date={Date.now() + 10000} overtime={true} zeroPadTime={2} precision={1}/></div>, images.bullshark], //add an onComplete prop lol (it would be very funny)
     "What is the name of the 8th largest Nile Perch?": ["Jorge", images.jorge],
+    "Are you safe from Marbled Lungfish on land?": ["No", images.lung],
     "Calculate the diameter of a Female Giant Freshwater Stingray given the Summer Rains were interrupted for 3 weeks by a category 3 instead of 4 monsoon.": ["1.5982 meters", images.sting],
     "Find a Living Chinese Paddlefish specimen within the next 24 hours.": ["Okay", images.extinct],
     "What are the exact coordinates of the nearest Arapaima.": ["40° 45' 20.7936'' N 73° 50' 10.662'' W", images.arapaima],
@@ -80,15 +84,6 @@ export default function Page(){
   const [difficulty, setDifficulty] = useState("Easy");
   const passFlip = value => setFlip(value);
   const passReset = value => setReset(value);
-
-  // const randomElement = (array, exclude = null) => {
-  //   const filteredArray = array.filter(element => element !== exclude);
-  //   return filteredArray[Math.floor(Math.random() * filteredArray.length)];
-  // }
-  //
-  // const removeElement = (array, remove) => {
-  //   array.splice(array.indexOf(remove), 1);
-  // }
 
   const flipReset = () => {
     setAnim(true);
@@ -121,7 +116,9 @@ export default function Page(){
 
   // Add a state for the history stack
   const [historyStack, setHistoryStack] = useState([]);
-  useEffect(()=> console.log(historyStack), [historyStack]);
+  useEffect(()=> {
+    if(historyStack.length >= 10) historyStack.shift();
+  }, [historyStack]);
 
   // Utility function to generate a random index, excluding the current index
   const getRandomIndex = (length, excludeIndex) => {
@@ -164,16 +161,46 @@ export default function Page(){
     });
   }
 
-  const changeDifficulty = (newSolutions, newColor) => {
-    setQuestions(Object.keys(newSolutions));
+  const updateDifficulty = (newDifficulty) => {
+    let newSolutions;
+    let newColor;
+
+    switch (newDifficulty) {
+      case "Easy":
+        newSolutions = solutions;
+        newColor = green;
+        break;
+      case "Medium":
+        newSolutions = hardSolutions;
+        newColor = blue;
+        break;
+      case "Hard":
+        newSolutions = impossibleSolutions;
+        newColor = red;
+        break;
+      default:
+        newSolutions = solutions;
+        newColor = green;
+    }
+
     setCurrObj(newSolutions);
+    setQuestions(Object.keys(newSolutions));
     setColor(newColor);
-  }
+    setDifficulty(newDifficulty);
+    setHistoryStack([]);
+    flipReset();
+  };
 
   const green = '#6FF1B7';
   const blue = '#6FADF1';
   const red = '#F18E6F';
 
+  // budget debugging
+  // useEffect(() => {
+  //   console.log("Current object", currObject);
+  //   console.log("Current question", questions);
+  //   console.log("History stack", historyStack);
+  // })
 
   return (
       <div className={"h-screen bg-yellow-200 grid grid-rows-7 p-7 lg:p-5 overflow-hidden bg-[url(/src/assets/arapaima.jpg)] bg-right bg-no-repeat bg-cover"}>
@@ -185,21 +212,19 @@ export default function Page(){
         </div>
 
         <div className={"text-center text-white select-none gap-5 lg:gap-3 flex justify-center items-center"}>
-          <div onClick={()=> {
-            changeDifficulty(solutions, green);
-            flipReset();
-            setDifficulty("Easy");
-          }}><Switch symbol={'Easy'} color={green}/></div>
-          <div onClick={()=> {
-            changeDifficulty(hardSolutions, blue);
-            flipReset();
-            setDifficulty("Medium");
-          }}><Switch symbol={'Medium'} color={blue}/></div>
-          <div onClick={()=> {
-            changeDifficulty(impossibleSolutions, red);
-            flipReset();
-            setDifficulty("Hard");
-          }}><Switch symbol={'Hard'} color={red}/></div>
+
+          <div onClick={()=> updateDifficulty("Easy")}>
+            <Switch symbol={'Easy'} color={green}/>
+          </div>
+
+          <div onClick={()=> updateDifficulty("Medium")}>
+            <Switch symbol={'Medium'} color={blue}/>
+          </div>
+
+          <div onClick={()=> updateDifficulty("Hard")}>
+            <Switch symbol={'Hard'} color={red}/>
+          </div>
+
         </div>
 
         <div className={"row-span-3 flex justify-center items-center"}>
@@ -207,7 +232,27 @@ export default function Page(){
           {questions.map(solution => {
             return (
                 <div key={solution.id} onAnimationEnd={() => setAnim(false)} className={`${anim && (solution === questions[questions.length - 1]) ? (direction === 'forward' ? 'top-card' : 'bottom-card') : ''} h-2/3 w-full lg:h-full lg:w-5/12 absolute flex justify-center drop-shadow-lg`}> {/*//${solution === questions[questions.length - 1] ? (direction === 'forward' ? 'top-card' : 'bottom-card') : ''}*/}
-                  <Flashcard question={solution} answer={currObject[solution][0]} setFlip={passFlip} flip={flip} setReset={passReset} reset={reset} color={color} image={currObject[solution][1]}/>
+                  {/*
+                  issue is that when you try to read currObject[solution]
+                  it seems to be undefined when you switch difficulties
+                  instead of switching objects, why not filter object keys array?
+                  filter for difficulty
+                  have one big object
+
+                  I was WRONG! History stack was pushing its top element onto the questions stack for a different difficulty
+                  So when the new difficulty tried to retrieve its value of a key it didnt have (from the previous difficulty),
+                  it returned undefined and errored the whole program
+
+                  Solution: when changing difficulty, the history stack is set to [] empty
+                  */}
+                      <Flashcard
+                          question={solution}
+                          answer={currObject[solution][0]}
+                          setFlip={passFlip} flip={flip}
+                          setReset={passReset}
+                          reset={reset}
+                          color={color}
+                          image={currObject[solution][1]}/>
                 </div>
             )
           })}
