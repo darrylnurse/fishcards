@@ -1,10 +1,22 @@
-//object of question answer pairs
-
 import Flashcard from "./Flashcard.jsx";
 import Switch from "./Switch.jsx";
-import React, {useEffect, useState} from "react";
+import {useEffect, useState} from "react";
 import Countdown from "react-countdown";
 
+/*
+          takes users input and stores it in state variable :)
+          set a current card :)
+          compare user Input to current card answer :)
+          flip card :)
+          if they are the same input color changes to green :)
+          increase streak count :)
+          if not then red :)
+          reset streak count :)
+
+          shuffle button
+          slightly off answers
+          mastered cards
+*/
 
 export default function Page(){
 
@@ -18,6 +30,7 @@ export default function Page(){
     swim: "https://t3.ftcdn.net/jpg/04/71/41/06/360_F_471410699_RoOncbBz8ull0Z4inBydMzLYoCtUvRsR.jpg",
     yay: "https://i.ibb.co/FqS2gVj/DALL-E-2024-03-08-22-14-29-A-semi-realistic-cartoony-scene-of-children-smiling-and-cheering-around-a.webp",
     all: "https://t3.ftcdn.net/jpg/00/39/33/12/360_F_39331239_NN2PxSkk5kxTafeUULXlNFJsfGde3e4G.jpg",
+    food: "https://assets.petco.com/petco/image/upload/c_pad,dpr_1.0,f_auto,q_auto,h_636,w_636/c_pad,h_636,w_636/3160051-center-4",
 
     beluga: "https://wwfint.awsassets.panda.org/img/original/huso_huso_schoenbrunn_phyllis.jpg",
     mekong: "https://www.mandai.com/content/dam/wrs/river-safari/animals/signpost/1x1/mekong-giant-catfish-1x1.jpg",
@@ -40,13 +53,20 @@ export default function Page(){
   }
 
   const solutions = {
-    "do you like fishies?": ["yes!", images.yay],
+    "what do fish eat?": [
+        <div key={"uncle billy joke"} className={"flex items-center"}>
+          fish food!
+          <img className={"size-10 lg:size-20"} src={"https://1000logos.net/wp-content/uploads/2023/05/Laughing-Emoji.png"} alt={"laugh-now"}/>
+          <img className={"size-10 lg:size-20"} src={"https://1000logos.net/wp-content/uploads/2023/05/Laughing-Emoji.png"} alt={"laugh-now"}/>
+          <img className={"size-10 lg:size-20"} src={"https://1000logos.net/wp-content/uploads/2023/05/Laughing-Emoji.png"} alt={"laugh-now"}/>
+        </div>, images.food],
     "spell fish!": ["f-i-s-h", images.weirdfish],
     "what is a catfish": ["a fish", images.catfish],
     "where can you find fishies?": ["water", images.water],
     "spell water!": ["w-a-t-e-r", images.spellwater],
     "do fishies swim?": ["yes!", images.swim],
     "what is your favorite fishy?": ["all!!!", images.all],
+    "do you like fishies?": ["yes!", images.yay],
   }
 
   const hardSolutions = {
@@ -82,6 +102,10 @@ export default function Page(){
   const [color, setColor] = useState('#6FF1B7');
   const [anim, setAnim] = useState(false);
   const [difficulty, setDifficulty] = useState("Easy");
+
+  //watch
+  const [answered, setAnswered] = useState(false);
+
   const passFlip = value => setFlip(value);
   const passReset = value => setReset(value);
 
@@ -89,7 +113,8 @@ export default function Page(){
     setAnim(true);
     setFlip(false);
     setReset(true);
-    //setPulse(false);
+    setAnswered(false);
+    returnInput();
   }
 
   // prefer this version, it moves the flashcards forwards and backwards sequentially, but the project requires random ig
@@ -191,6 +216,59 @@ export default function Page(){
     flipReset();
   };
 
+  const[input, setInput] = useState("");
+  const[answerColor, setAnswerColor] = useState("#FFFFFF");
+  const[currentAnswer, setCurrentAnswer] = useState(currObject[questions[questions.length - 1]][0])
+  const[textColor, setTextColor] = useState("#000000");
+  const[textShadow, setTextShadow] = useState("");
+  const [streak, setStreak] = useState(0);
+
+  useEffect(() => {
+    setCurrentAnswer(currObject[questions[questions.length - 1]][0]);
+    //console.log("Guess:", guess);
+    //console.log("Current input:", input);
+    //console.log("Current answer:", currentAnswer);
+
+  }, [questions, currentAnswer]);
+
+
+  const handleSubmit = event => {
+    event.preventDefault();
+    setTextColor("#FFFFFF");
+    setTextShadow("1px 1px 2px black");
+    setAnswered(true);
+
+    if(checkAnswer(input, currentAnswer)){
+      setStreak(streak + 1);
+      setAnswerColor(green);
+      setInput("Ding ding ding!!!");
+    }
+    else {
+      setStreak(0);
+      setAnswerColor(red);
+      setInput("Wrong!!!");
+    }
+  }
+
+  const handleInvalid = event => {
+    event.target.setCustomValidity("Guess the answer or Jorge will get you.");
+  }
+
+  const handleValid = event => {
+    event.target.setCustomValidity("");
+  }
+
+  const checkAnswer = (guess, truth) => {
+    if((guess === truth) || (guess.toLowerCase() === truth)) return true;
+  }
+
+  const returnInput = () => {
+    setAnswerColor("#FFFFFF");
+    setTextColor("#000000");
+    setTextShadow("");
+    setInput("");
+  }
+
   const green = '#6FF1B7';
   const blue = '#6FADF1';
   const red = '#F18E6F';
@@ -203,68 +281,115 @@ export default function Page(){
   // })
 
   return (
-      <div className={"h-screen bg-yellow-200 grid grid-rows-7 p-7 lg:p-5 overflow-hidden bg-[url(/src/assets/arapaima.jpg)] bg-right bg-no-repeat bg-cover"}>
+      <div
+          className={"h-screen bg-yellow-200 grid  grid-rows-7 p-7 lg:p-5 overflow-hidden bg-[url(/src/assets/arapaima.jpg)] bg-right bg-no-repeat bg-cover"}>
 
         <div style={{textShadow: "1px 1px 2px black"}}
              className={"select-none text-white flex flex-col items-center justify-center"}>
-          <div className={"text-7xl"}>Fishcards!</div>
-          <div>Total {difficulty} <span className={"line-through"}>Fish</span> Cards: {questions.length}</div>
+          <div className={"text-7xl hover:scale-[103%] transition-transform"}>Fishcards!</div>
+          <div className={"flex flex-row gap-4 justify-center"}>
+            <div>Total {difficulty} <span className={"line-through"}>Fish</span> Cards: {questions.length}</div>
+            <div>Streak: {streak}</div>
+          </div>
         </div>
 
-        <div className={"text-center text-white select-none gap-5 lg:gap-3 flex justify-center items-center"}>
+        <div className={"text-center pt-5 lg:pt-0 text-white select-none gap-5 lg:gap-3 flex justify-center items-center"}>
 
-          <div onClick={()=> updateDifficulty("Easy")}>
+          <div onClick={() => updateDifficulty("Easy")}>
             <Switch symbol={'Easy'} color={green}/>
           </div>
 
-          <div onClick={()=> updateDifficulty("Medium")}>
+          <div onClick={() => updateDifficulty("Medium")}>
             <Switch symbol={'Medium'} color={blue}/>
           </div>
 
-          <div onClick={()=> updateDifficulty("Hard")}>
+          <div onClick={() => updateDifficulty("Hard")}>
             <Switch symbol={'Hard'} color={red}/>
           </div>
 
         </div>
 
-        <div className={"row-span-3 flex justify-center items-center"}>
+        <div className={"row-span-3 flex flex-row justify-center items-center"}>
           <div className={"relative h-full w-full flex items-center justify-center"}>
-          {questions.map(solution => {
-            return (
-                <div key={solution.id} onAnimationEnd={() => setAnim(false)} className={`${anim && (solution === questions[questions.length - 1]) ? (direction === 'forward' ? 'top-card' : 'bottom-card') : ''} h-2/3 w-full lg:h-full lg:w-5/12 absolute flex justify-center drop-shadow-lg`}> {/*//${solution === questions[questions.length - 1] ? (direction === 'forward' ? 'top-card' : 'bottom-card') : ''}*/}
-                  {/*
-                  issue is that when you try to read currObject[solution]
-                  it seems to be undefined when you switch difficulties
-                  instead of switching objects, why not filter object keys array?
-                  filter for difficulty
-                  have one big object
 
-                  I was WRONG! History stack was pushing its top element onto the questions stack for a different difficulty
-                  So when the new difficulty tried to retrieve its value of a key it didnt have (from the previous difficulty),
-                  it returned undefined and errored the whole program
+            {/*<div className={"fish-hover absolute right-3 invisible lg:visible"}><img*/}
+            {/*    className={"select-none cursor-pointer"}*/}
+            {/*    src={"src/assets/fishy.gif"} alt={"silly-fish"}/></div>*/}
 
-                  Solution: when changing difficulty, the history stack is set to [] empty
-                  */}
-                      <Flashcard
-                          question={solution}
-                          answer={currObject[solution][0]}
-                          setFlip={passFlip} flip={flip}
-                          setReset={passReset}
-                          reset={reset}
-                          color={color}
-                          image={currObject[solution][1]}/>
-                </div>
-            )
-          })}
+            {questions.map(solution => {
+              return (
+                  <div key={solution.id} onAnimationEnd={() => setAnim(false)}
+                       className={`${anim && (solution === questions[questions.length - 1]) ? (direction === 'forward' ? 'top-card' : 'bottom-card') : ''} h-2/3 w-full lg:h-full lg:w-5/12 absolute flex justify-center drop-shadow-lg`}> {/*//${solution === questions[questions.length - 1] ? (direction === 'forward' ? 'top-card' : 'bottom-card') : ''}*/}
+                    {/*
+                    issue is that when you try to read currObject[solution]
+                    it seems to be undefined when you switch difficulties
+                    instead of switching objects, why not filter object keys array?
+                    filter for difficulty
+                    have one big object
+
+                    I was WRONG! History stack was pushing its top element onto the questions stack for a different difficulty
+                    So when the new difficulty tried to retrieve its value of a key it didnt have (from the previous difficulty),
+                    it returned undefined and errored the whole program
+
+                    Solution: when changing difficulty, the history stack is set to [] empty
+                    */}
+                    <Flashcard
+                        question={solution}
+                        answer={currObject[solution][0]}
+                        setFlip={passFlip}
+                        flip={flip}
+                        setReset={passReset}
+                        reset={reset}
+                        color={color}
+                        image={currObject[solution][1]}
+                        answered={answered}
+                    />
+                  </div>
+              )
+            })}
+
+            {/*<div className={"left-fish fish-hover absolute left-3 invisible lg:visible"}><img*/}
+            {/*    className={"select-none cursor-pointer"}*/}
+            {/*    style={{transform: "rotateY(180deg)"}} src={"src/assets/fishy.gif"} alt={"silly-fish"}/></div>*/}
+            {/*<article> bye bye fishy :( </article>*/}
+
           </div>
+        </div>
+
+        <div className={"flex justify-center items-start lg:items-end"}>
+          <form onSubmit={handleSubmit} className={"h-1/2 w-full lg:w-1/4 flex flex-row items-center gap-3"}>
+            <input name={"attempt"}
+                   onChange={event => {
+                     setInput(event.target.value);
+                     handleValid(event);
+                   }}
+                   onClick={returnInput}
+                   className={"text-center text-lg lg:text-xl h-full w-3/4 rounded-2xl"}
+                   type={"text"}
+                   value={input}
+                   required={true}
+                   autoComplete={"off"}
+                   onInvalid={handleInvalid}
+                   style={{backgroundColor: answerColor, color: textColor, textShadow: textShadow}}
+            />
+            <button style={{textShadow: "1px 1px 2px black", backgroundColor: color}}
+                    type={"submit"}
+                    className={"select-none cursor-pointer flex transition-transform hover:scale-[102%] active:scale-[98%] hover:drop-shadow-xl drop-shadow-lg justify-center items-center text-white h-full w-1/4 p-5 rounded-2xl"}>Guess
+            </button>
+          </form>
         </div>
 
         <div className={"flex justify-center items-center row-span-1 lg:row-span-1"}>
-          <div className={"w-2/3 lg:w-1/5 h-1/3 grid grid-cols-2 gap-8 lg:gap-2 text-3xl text-white"}>
-            <div onClick={moveBack}><Switch symbol={'<'} color={color}/></div>
-            <div onClick={moveFront}><Switch symbol={'>'} color={color}/></div>
+          <div className={"w-2/3 lg:w-1/5 grid grid-cols-2 gap-8 lg:gap-2 text-3xl text-white"}>
+            <div onClick={moveBack}>
+              <Switch symbol={'<'} color={color}/>
+            </div>
+            <div onClick={moveFront}>
+              <Switch symbol={'>'} color={color}/>
+            </div>
           </div>
         </div>
+
 
       </div>
   )
